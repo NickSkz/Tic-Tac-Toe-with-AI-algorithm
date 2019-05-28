@@ -29,8 +29,8 @@ Wezl SI::bestRuch(Plansza& glowna, bool gracz)
 	      temp.X = idx;
 	      temp.Y = jdx;                                          
 	      
-	      if(gracz){ glowna.board[idx][jdx] = 'X'; } 
-	      else{ glowna.board[idx][jdx] = 'O'; }      //By sie nam tura zm
+	      if(gracz){ glowna.board[idx][jdx] = 'X'; glowna.ostatni.X = idx; glowna.ostatni.Y = jdx; } 
+	      else{ glowna.board[idx][jdx] = 'O'; glowna.ostatni.X = idx; glowna.ostatni.Y = jdx; }    
 
 	      if(gracz){ temp.punkty = bestRuch(glowna, false).punkty;}
 	      else{ temp.punkty = bestRuch(glowna, true).punkty;}
@@ -78,6 +78,7 @@ void SI::zrobTo(Plansza& glowna)
   Wezl najlepszy = bestRuch(glowna, false);
   // std::cout<<najlepszy.punkty<<"<----------"<<std::endl;
   glowna.board[najlepszy.X][najlepszy.Y] = 'O';
+  glowna.ostatni.X = najlepszy.X; glowna.ostatni.Y = najlepszy.Y;
 
   glowna.turn = false;
   glowna.isOn = true;

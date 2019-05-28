@@ -6,6 +6,12 @@
 
 //SEITE - KRZYRZYK = TRUE, KOLKO = FALSE
 
+struct Pole
+{
+  int X;
+  int Y;
+};
+
 
 class Plansza
 {
@@ -14,6 +20,7 @@ public:
   bool isOn;
   bool turn;
   int zwyciezca;
+  Pole ostatni;  
   
   Plansza(int wymX, int wymY);
 
