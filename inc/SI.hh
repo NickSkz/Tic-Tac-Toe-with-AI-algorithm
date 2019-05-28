@@ -16,6 +16,7 @@ class SI
 {
 public:
   static Wezl bestRuch(Plansza& glowna, bool gracz);
+  static Wezl bestRuch(Plansza& glowna, bool gracz, int licznik);
   static void zrobTo(Plansza& glowna);
 };
 
