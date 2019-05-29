@@ -2,6 +2,10 @@
 
 using namespace std;
 
+/*******************************/
+//Stworz Plansze XxY
+//
+/*******************************/
 Plansza::Plansza(int wymX, int wymY)
 { 
   vector<char> temp;
@@ -16,22 +20,22 @@ Plansza::Plansza(int wymX, int wymY)
 	}
     }
 
-  zwyciezca = -99;
-  isOn = true;
+  zwyciezca = -99;                          //Ustaw zwyciezce na cos innego - na nikogo
+  isOn = true;                              //Odpal gre, zaczyna X
   turn = true;
 }
 
 
 void Plansza::makeRuch()
 {
-  while(true)
+  while(true)                              //Dopoki nie bedzie dobrego ruchu
     {
       int X, Y;
       turn ? cout<<"Ruch: X\n" : cout<<"Ruch: Y\n"; 
       cin>>X;
       cin>>Y;
 
-      if(turn)
+      if(turn)                             //W zaleznosci od tury, jak bedzie miejsce wykonaj ruch
 	{
 	  if(board[X][Y] == ' ')
 	    {
@@ -42,7 +46,7 @@ void Plansza::makeRuch()
 	    }
 	  else
 	    {
-	      cout<<"Pole zajete!\n";
+	      cout<<"Pole zajete!\n";     //Jak nie to do skutku
 	      continue;
 	    }
 	}else
@@ -62,11 +66,16 @@ void Plansza::makeRuch()
 	}
     }
 
-  checkWin();
+  checkWin();                                  //Sprawdz czy player nie wygral, albo remis
   checkDraw();
 }
 
 
+
+/*******************************/
+//Sprawdz czy remis
+//
+/*******************************/
 void Plansza::checkDraw()
 {
   bool flag{ false  };
@@ -75,7 +84,7 @@ void Plansza::checkDraw()
     {
       for(unsigned int jdx = 0; jdx < board.size(); ++jdx)
 	{
-	  if(board[idx][jdx] == ' ')
+	  if(board[idx][jdx] == ' ')                 //Gdy wolne miejsce zakoncz sprawdzanie
 	    {
 	      flag = true;
 	      break;
@@ -83,7 +92,7 @@ void Plansza::checkDraw()
 	}
 
       if(flag) break;
-      if(idx == board.size() - 1)
+      if(idx == board.size() - 1)                    //Jezeli przeleci wszystko = remis
 	{
 	  isOn = false;
 	  zwyciezca = 0;
@@ -92,17 +101,19 @@ void Plansza::checkDraw()
 
 }
 
-
+/*******************************/
+//Check wygrana w odniesieniu do
+//ostatniego ulozonego elementu
+/*******************************/
 void Plansza::checkWin()
 {
-  //Check poziom
-  
+  //Check poziom 
   for(unsigned int idx = 0; idx < board.size(); ++idx)
     {
       if(turn)
 	{
-	  if(board[ostatni.X][idx] != 'X') break;
-	  if(idx == board.size() - 1)
+	  if(board[ostatni.X][idx] != 'X') break;        //Jezeli nie bedzie X w poziomie, nie ma win
+	  if(idx == board.size() - 1)                    //Jezeli do konca to wygrana w zal od turn
 	    {
 	      retWinner(true);
 	      isOn = false;
@@ -122,13 +133,12 @@ void Plansza::checkWin()
     }
 
 
-  //Check pion
-  
+  //Check pion  
   for(unsigned int idx = 0; idx < board.size(); ++idx)
     {
       if(turn)
 	{
-	  if(board[idx][ostatni.Y] != 'X') break;
+	  if(board[idx][ostatni.Y] != 'X') break;            //Identyczna zasada ja w poziomie
 	  if(idx == board.size() - 1)
 	    {
 	      retWinner(true);
@@ -149,16 +159,14 @@ void Plansza::checkWin()
     }
 
   //Check przekatna
-
-  if(ostatni.X == ostatni.Y)
-    {
-      
+  if(ostatni.X == ostatni.Y)                     //Jak indexy poprzedniego takie same = lezy na przek
+    {      
       for(unsigned int idx = 0; idx < board.size(); ++idx)
 	{
 	  
 	  if(turn)
 	    {
-	      if(board[idx][idx] != 'X') break;
+	      if(board[idx][idx] != 'X') break;    //Identyczna zasada jak wyzej, lecimy po przekatnej
 	      if(idx == board.size() - 1)
 		{
 		  retWinner(true);
@@ -183,17 +191,15 @@ void Plansza::checkWin()
 
 
   //Check przeciwPrzekatna
-
-  
   if(ostatni.Y == static_cast<int>(board.size()) - 1 - ostatni.X)
     {
       unsigned int jdx = 0;
-      for(unsigned int idx = board.size() - 1; idx >= 0; --idx)
+      for(int idx = static_cast<int>(board.size()) - 1; idx >= 0; --idx)
 	{
 	  
-	  if(turn)
+	  if(turn)                           //Identyczna zasada jak wyzej, lecimy po antyprzekatnej
 	    {
-	      if(board[jdx][idx] != 'X') break;
+	      if(board[jdx][idx] != 'X') break; 
 	      if(idx == 0)
 		{
 		  retWinner(true);
@@ -222,7 +228,7 @@ void Plansza::checkWin()
 }
 
 
-void Plansza::display()
+void Plansza::display()               //Wyswietl tablice, z obrobka: |
 {
   for(unsigned int idx = 0; idx < board.size(); ++idx)
     {

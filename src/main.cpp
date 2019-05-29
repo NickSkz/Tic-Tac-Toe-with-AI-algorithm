@@ -1,32 +1,21 @@
 #include <iostream>
 
 #include "Plansza.hh"
-#include "SI.hh"
+#include "Arena.hh"
 
 using namespace std;
 
+/*******************************/
+//Wywolaj gre, gdzie tablica ma
+//rozmiar podanym przez user
+/*******************************/
 int main()
 {
   int size;
   cout<<"Podaj rozmiar planszy: ";
   cin>>size;
   cout<<endl;
-  
-  Plansza test(size,size);
 
-  while(test.isOn)
-    {
-      test.display();
-      
-      if(test.turn)
-	{
-	  test.makeRuch();
-	  test.turn = !test.turn;
-	}
-      else
-	{
-	  cout<<"\nAI turn\n\n";
-	  SI::zrobTo(test);
-	}
-    }
+  Plansza battlefield(size, size);
+  Arena::startThaGame(battlefield);       //Rozpocznij gre
 }

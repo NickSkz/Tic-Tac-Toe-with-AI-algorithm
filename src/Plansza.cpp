@@ -2,6 +2,10 @@
 
 using namespace std;
 
+/*******************************/
+//OLD, z niezmieniana detekcja
+//wygranej
+/*******************************/
 Plansza::Plansza(int wymX, int wymY)
 { 
   vector<char> temp;
