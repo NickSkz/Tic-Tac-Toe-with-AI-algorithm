@@ -1,6 +1,9 @@
 #include "Arena.hh"
 
+#include <ctime>
+
 using namespace std;
+
 
 /*******************************/
 //Glowna petla gry
@@ -8,6 +11,8 @@ using namespace std;
 /*******************************/
 void Arena::startThaGame(Plansza& battlefield)
 {
+  clock_t start, stop;
+  
   while(battlefield.isOn)                       //Dopoki sa wolne pola
     {
       battlefield.display();                    //Wyswietl tablice
@@ -21,8 +26,11 @@ void Arena::startThaGame(Plansza& battlefield)
 	}
       else                                      //Gdy O
 	{
-	  cout<<"Ruch: O[SI]\n\n\n";          
+	  cout<<"Ruch: O[SI]\n\n\n";
+	  start = clock();
 	  SI::zrobTo(battlefield);              //Niech AI wykona ruch
+	  stop = clock();
+	  cout<<"Ruch wykonano w czasie: "<<double(stop-start)/CLOCKS_PER_SEC<<endl;
 	}
       if(!battlefield.isOn)                     //Gdy koniec, wyswietl odpowiednia grafike
 	{

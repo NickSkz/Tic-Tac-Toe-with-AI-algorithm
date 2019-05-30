@@ -18,4 +18,4 @@ obj/Arena.o: inc/Arena.hh src/Arena.cpp
 	g++ -c -g -Iinc -std=c++11 -Wall -pedantic -o obj/Arena.o src/Arena.cpp
 
 clean:
-	rm -f obj/*.o
+	rm -f obj/*.o a.out

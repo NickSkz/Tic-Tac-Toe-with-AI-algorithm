@@ -2,4 +2,4 @@
 //Stala okreslajaca dopuszczalna
 //glebokosc rekurencji
 /*******************************/
-constexpr int licznik = 12;
+constexpr int licznik = 20;

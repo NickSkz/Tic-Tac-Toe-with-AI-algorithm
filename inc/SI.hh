@@ -15,6 +15,11 @@ struct Wezl
   int X;
   int Y;
   int punkty;        //Ile pkt ustawiamy
+
+  Wezl(int x, int y): X{x}, Y{y}
+  {};
+
+  Wezl() = default;
 };
 
 /*******************************/
@@ -25,7 +30,7 @@ class SI
 {
 public:
   static Wezl bestRuch(Plansza& glowna, bool gracz);                //Znajdz najlepszy ruch
-  static Wezl bestRuch(Plansza& glowna, bool gracz, int licznik);
+  static Wezl bestRuch(Plansza& glowna, bool gracz, int licznik, int alfa, int beta);
   static void zrobTo(Plansza& glowna);                              //Zrob ten ruch
 };
 
