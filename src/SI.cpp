@@ -8,10 +8,11 @@
 /*******************************/
 void SI::zrobTo(Plansza& glowna)
 {
-  Wezl najlepszy = bestRuch(glowna, false, licznik, -99999, 99999);   //Ustaw najlepszy wezel
-  // std::cout<<najlepszy.punkty<<"<----------"<<std::endl;
-  glowna.board[najlepszy.X][najlepszy.Y] = 'O';        //Wstaw O w najlepsze X i Y
-  glowna.ostatni.X = najlepszy.X; glowna.ostatni.Y = najlepszy.Y;    //Po to by dzialalo checkWin()
+  int X{ bestRuch(glowna, false, licznik, -99999, 99999).X };
+  int Y{ bestRuch(glowna, false, licznik, -99999, 99999).Y };
+  
+  glowna.board[X][Y] = 'O';        //Wstaw O w najlepsze X i Y
+  glowna.ostatni.X = X; glowna.ostatni.Y = Y;    //Po to by dzialalo checkWin()
 
   glowna.turn = false;                  //Kalibrujemy, tura - O, i gra idzie dalej
   glowna.isOn = true;                   
@@ -82,30 +83,24 @@ Wezl SI::bestRuch(Plansza& glowna, bool gracz, int licznik, int alfa, int beta)
 	}
     }
 
+  int najWyn;                        //Zmienna przechowujaca najkorzystniejszy wynik w zal od tury
+  if(gracz) najWyn = 99999;
+  else najWyn = -99999;
+
   
-  int tenRuch = -99;           
-  if(gracz == true)                               //Gdy X to chcemy minimalizowac rezultat
+  int tenRuch;           
+  if(gracz)                               //Gdy X to chcemy minimalizowac rezultat
     {
-      int najWyn = 99999;
       for(unsigned int idx = 0; idx < ruchy.size(); ++idx)   
-	{// std::cout<<ruchy[idx].punkty<<std::endl;
-	  if(ruchy[idx].punkty < najWyn)          //Wiec gdy najwyz wyn wiekszy od obecnego wezl
-	    {	      
-	      najWyn = ruchy[idx].punkty;        //Ustaw obecny jako najlepszy i zapamietaj jego idx
-	      tenRuch = idx;
-	    }
+	{// Wiec gdy dany wezel ma wart mniejsza niz najmniejszy wynik, on bedzie najmn, zapisujem idx
+	  if(ruchy[idx].punkty < najWyn){ najWyn = ruchy[idx].punkty; tenRuch = idx; }
 	}
     }
   else                                    //Gdy Y to maxymalizujemy rezultat
     {
-      int najWyn = -99999;
       for(unsigned int idx = 0; idx < ruchy.size(); ++idx)   
-	{// std::cout<<ruchy[idx].punkty<<std::endl;
-	  if(ruchy[idx].punkty > najWyn)     //Gdy najWynik mniejszy od obecnego
-	    {
-	      najWyn = ruchy[idx].punkty;   //Ustaw obecny jako najlepszy i zapamietaj jego idx
-	      tenRuch = idx;	      
-	    }
+	{// Wiec gdy dany wezel ma wart wieksza niz najwiekszy wynik, on bedzie najw, zapisujem idx
+	  if(ruchy[idx].punkty > najWyn){ najWyn = ruchy[idx].punkty; tenRuch = idx; }
 	}
     }
 
@@ -115,81 +110,6 @@ Wezl SI::bestRuch(Plansza& glowna, bool gracz, int licznik, int alfa, int beta)
 
 
 
-
-
-/*******************************/
-//To samo co powyzej, jedyna
-//roznica to czysty minimax
-/*******************************/
-Wezl SI::bestRuch(Plansza& glowna, bool gracz)
-{
-  std::vector<Wezl> ruchy;               //Tablica z ruchami mozliwymi
-
-  if(gracz) glowna.turn = false;         //Z powodu takiego ze zmienilismy ture, a chcemy spr poprzedni
-  else glowna.turn = true;
-
-  glowna.zwyciezca = -99;
-
-  glowna.checkWin();                         //Sprawdz wygrana
-  if(glowna.zwyciezca == -99) glowna.checkDraw();  //Jezlein nie wygrana moze remis
-  
-  Wezl buff;                               //Buff do zwracania
-  if(glowna.zwyciezca == -1){ buff.punkty = 100; return buff; } //Jesli wygrana O, daj 100
-  if(glowna.zwyciezca == 0) { buff.punkty = 0; return buff; }  	//Jesli remis zworc 0	 
-  if(glowna.zwyciezca == 1) { buff.punkty = -50; return buff; } //Jesli wygrana X, daj -50 
-
-
-  for(unsigned int idx = 0; idx < glowna.board.size(); ++idx)     //Przeszukaj cala tablice
-    {      
-      for(unsigned int jdx = 0; jdx < glowna.board.size(); ++jdx)
-	{
-	  if(glowna.board[idx][jdx] == ' ')                       //Gdy puste pole
-	    {
-	      Wezl temp(idx, jdx);                          //Stworz wezel, z obecnymi x,y   
-	      
-	      if(gracz){ glowna.board[idx][jdx] = 'X'; glowna.ostatni.X = idx; glowna.ostatni.Y = jdx; }             //W zaleznosci czyja tura wstaw X albo O, potem bedzie usunieta, + ustaw ostatni
-	      else{ glowna.board[idx][jdx] = 'O'; glowna.ostatni.X = idx; glowna.ostatni.Y = jdx; }    
-
-	      if(gracz){ temp.punkty = bestRuch(glowna, false).punkty;}  //Rekurencyjnie sprawdz punkty
-	      else{ temp.punkty = bestRuch(glowna, true).punkty;}      //Zmien rowniez ture
-	      // std::cout<<temp.punkty<<std::endl;
-
-	      ruchy.push_back(temp);            //Zwroc wezel, z przypisanymi juz punktami z rekurencji
-	      glowna.board[idx][jdx] = ' ';     //Napraw to co wstawilismy
-	    }
-	}
-    }
-
-  
-  int tenRuch = -99;
-  if(gracz == true)            //W zaleznosci czy X czy O
-    {
-      int najWyn = 99999;
-      for(unsigned int idx = 0; idx < ruchy.size(); ++idx) //Dla wszystkich ruchow
-	{// std::cout<<ruchy[idx].punkty<<std::endl;
-	  if(ruchy[idx].punkty < najWyn)             //Jak dla X najWyn jest wiekszy od obecnego
-	    {
-	      tenRuch = idx;
-	      najWyn = ruchy[idx].punkty;            //Ustaw obecny jako najmniejszy + zapisz jego idx
-	    }
-	}
-    }
-  else
-    {
-      int najWyn = -99999;
-      for(unsigned int idx = 0; idx < ruchy.size(); ++idx)
-	{// std::cout<<ruchy[idx].punkty<<std::endl;
-	  if(ruchy[idx].punkty > najWyn)     //Jak dla O najWyn jest mniejszy od obecnego
-	    {
-	      tenRuch = idx;
-	      najWyn = ruchy[idx].punkty;    //Ustaw obecny jako najwiekszy, + znaj jego index
-	    }
-	}
-    }
-
-  return ruchy[tenRuch];                   //Zwroc najlepszy ruch
-  
-}
 
 
 
